@@ -1,25 +1,18 @@
-def test_can_create_database_in_memory(sqlite_cursor):
-    sqlite_cursor.execute('SELECT * FROM sqlite_master')
-
-
-def test_can_create_database(sqlite_cursor, my_fixt):
-    sqlite_cursor.executescript("""CREATE TABLE cats (
+def test_can_create_database(sqlite):
+    sqlite.executescript("""CREATE TABLE cats (
         id INTEGER PRIMARY KEY,
         name TEXT
     );""")
 
-    sqlite_cursor.execute("""SELECT name FROM sqlite_master
+    cursor = sqlite.execute("""SELECT name FROM sqlite_master
         WHERE type='table' AND name='cats'
     """)
 
-    assert sqlite_cursor.fetchone() is not None
-
-    assert my_fixt == 'ok'
-test_can_create_database.my_param = 'ok'
+    assert cursor.fetchone() is not None
 
 
-def test_can_insert_and_select(sqlite_cursor, my_fixt):
-    sqlite_cursor.executescript("""CREATE TABLE cats (
+def test_can_insert_and_select(sqlite):
+    sqlite.executescript("""CREATE TABLE cats (
         id INTEGER PRIMARY KEY,
         name TEXT
     );
@@ -27,10 +20,15 @@ def test_can_insert_and_select(sqlite_cursor, my_fixt):
     INSERT INTO cats(name) VALUES ('mishca'), ('vasya');
     """)
 
-    sqlite_cursor.execute("SELECT name FROM cats")
+    cursor = sqlite.execute("SELECT name FROM cats")
 
-    assert sqlite_cursor.fetchone()[0] == 'mishca'
-    assert sqlite_cursor.fetchone()[0] == 'vasya'
-    assert sqlite_cursor.fetchone() is None
+    assert cursor.fetchone()[0] == 'mishca'
+    assert cursor.fetchone()[0] == 'vasya'
+    assert cursor.fetchone() is None
 
-    assert my_fixt == 'lol'
+
+def test_fetched_row_is_tuple(sqlite):
+    cursor = sqlite.execute("SELECT name FROM cats")
+    row = cursor.fetchone()
+    assert isinstance(row, tuple)
+test_fetched_row_is_tuple.db_script = 'simple_db'
