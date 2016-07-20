@@ -5,10 +5,11 @@ import sys
 
 simple_db = """CREATE TABLE cats (
     id INTEGER PRIMARY KEY,
-    name TEXT
+    name TEXT,
+    age INTEGER
 );
 
-INSERT INTO cats(name) VALUES ('mishca'), ('vasya');
+INSERT INTO cats(name, age) VALUES ('mishca', 5), ('vasya', 3);
 """
 
 
